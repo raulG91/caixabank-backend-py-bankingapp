@@ -190,6 +190,7 @@ Implement a set of rules to analyze a user's transaction history to identify unu
 
 
 **Fraud Detection Rules**
+
 - High Deviation from Average Spending:
 Flag a transaction as fraud (fraud=True) if the amount exceeds 3 standard deviations from the customer's average daily spending over the 90 days prior to the transaction.
 
@@ -226,7 +227,7 @@ Ensure email delivery through proper configuration of the mail server and integr
 The system should generate and send email notifications using the following templates based on the type of alert:
 
 - Template savings alert:
- ```
+```
 Dear {user_name},
 
 Great news! Your savings are nearing the target amount of {alert_target_amount}.
@@ -236,8 +237,10 @@ Best Regards,
 The Management Team
         
 ```
+
 - Template balance drop alert:
- ```
+
+```
 Dear {user_name},
 
 We noticed a significant balance drop in your account more than {alert_balance_drop_threshold}.
@@ -245,8 +248,6 @@ If this wasn't you, please review your recent transactions to ensure everything 
 
 Best Regards,
 The Management Team
-
-
         
 ```
 
