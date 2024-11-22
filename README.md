@@ -227,6 +227,7 @@ Ensure email delivery through proper configuration of the mail server and integr
 The system should generate and send email notifications using the following templates based on the type of alert:
 
 - Template savings alert:
+
 ```
 Dear {user_name},
 
@@ -250,7 +251,6 @@ Best Regards,
 The Management Team
         
 ```
-
 
 
 ### 💫 Guides
