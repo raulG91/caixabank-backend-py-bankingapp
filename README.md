@@ -38,7 +38,8 @@ financial_management_app/
 ```
 ## 🎯 Tasks
 
-### TASK 1
+#### TASK 1: Manage user login
+
 Develop a simple user authentication functionality for the digital financial management platform. This involves implementing secure and efficient mechanisms to register users and manage their login sessions. The authentication system must use JWT (JSON Web Tokens) for session management and ensure that user passwords are securely stored using hashing techniques.
 
 
@@ -68,7 +69,7 @@ Develop a simple user authentication functionality for the digital financial man
 
 
 
-### TASK 2: Projection of Recurring Expenses
+#### TASK 2: Projection of Recurring Expenses
 
 Develop the endpoints needed to allow customers to input their recurring monthly expenses, such as subscriptions, bills, and loan payments. Manage both positive (inflows) and negative (outflows) amounts. The system will then calculate the cumulative effect of these expenses on their balance over the course of a year. The response should include a detailed breakdown showing how each recurring expense affects their monthly and yearly balances. Ensure the system is designed to handle changes in expenses or additional costs, and JWT for secure user authentication, ensuring that only authorized users can access their financial projections. 
 
@@ -113,7 +114,7 @@ Develop the endpoints needed to allow customers to input their recurring monthly
 | **Response**         | **200 - Success**   ``` list of monthly expenses [{"month":YYYY-MM,"recurring_expenses" : float (total amount)} , {...} , ...]```                                                           |
 
 
-### TASK 3: Simulation of International Transfers:
+#### TASK 3: Simulation of International Transfers:
 Implement a feature where users can simulate international money transfers, calculating the exchange rate, applicable fees, and the final amount the recipient will receive in the destination currency. The API should allow users to input details such as the sending amount, target currency, and transfer fees. Using Python, calculate the total cost of the transfer, including exchange rates, and return the amount the recipient will receive. Ensure that Flask handles the routing and JWT is used to verify the user’s identity before allowing access to the simulation. Additionally, include a mechanism to fetch live exchange rates via an external API or a mock service for accurate simulations.
 - The currencies exchanges and fees can be found in the files `exchange_rates.csv`and `exchange_fees.csv`.
 
@@ -145,7 +146,7 @@ Implement a feature where users can simulate international money transfers, calc
 |                      | **400 - Currencies not found:** ```{"msg": "No exchange rate available for these currencies."}```|
 
 
-### TASK 4: Savings Goal Alert System:
+#### TASK 4: Savings Goal Alert System:
 Create an API that helps customers monitor their savings goals. Create the endpoints to create and manage these alerts.
 
  - Table for endpoints:
@@ -184,7 +185,7 @@ Create an API that helps customers monitor their savings goals. Create the endpo
 
 
 
-### TASK 5:
+#### TASK 5: Find Unusual patterns
 Implement a set of rules to analyze a user's transaction history to identify unusual spending patterns. The system should flag transactions that deviate significantly from their typical spending behavior, such as large or unexpected purchases. Using Python, process transaction data and apply pattern recognition techniques to detect any outliers. Flask will handle the requests, and JWT will be used for secure user authentication, ensuring only the authorized user can view their financial data. This feature is critical for enhancing security and detecting potential fraud.
 
 
@@ -218,7 +219,7 @@ Flag as fraud if more than 3 transactions occur within 5 minutes, and the combin
 
 
 
-### TASK 6: 
+#### TASK 6: Notify alerts via mail
 Implement a feature to notify users via email when a transaction triggers one of their saved alerts. Trigger email notifications automatically when, after a transaction, a saved alert is matched.
 Personalize emails by dynamically populating {user_name}, {alert_target_amount}, and {alert_balance_drop_threshold} with the relevant user and alert details.
 Ensure email delivery through proper configuration of the mail server and integration with the system.
@@ -251,7 +252,7 @@ The Management Team
 
 
 
-# Guides
+### 💫 Guides
 - Technology Stack: Use Python, Flask, MySQL, and Docker for the implementation.
 
 - Docker Configuration:
