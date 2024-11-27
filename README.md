@@ -47,12 +47,12 @@ Develop a simple user authentication functionality for the digital financial man
 
 | Endpoint                         | Method | Params/Body                                                                                  | Requires Auth | Response Codes              |
 |----------------------------------|--------|---------------------------------------------------------------------------------------------|---------------|-----------------------------|
-| `/auth/register`                 | POST   | `{ "email": string, "password": string, "name": string }`                                   | No            | 201 (Created), 400 (Error)  |
-| `/auth/login`                    | POST   | `{ "email": string, "password": string }`                                                  | No            | 200 (OK), 400 (Error), 401 (Unauthorized) |
+| `/api/auth/register`                 | POST   | `{ "email": string, "password": string, "name": string }`                                   | No            | 201 (Created), 400 (Error)  |
+| `/api/auth/login`                    | POST   | `{ "email": string, "password": string }`                                                  | No            | 200 (OK), 400 (Error), 401 (Unauthorized) |
 
  - Expected responses:
 
-| **Endpoint**        | **/auth/register**                                                                                           |
+| **Endpoint**        | **/api/auth/register**                                                                                           |
 |----------------------|-------------------------------------------------------------------------------------------------------------|
 | **Response**         | **201 - Success**   ```{"name":"Nuwe Test","hashedPassword":"$2b$12$ia0DtGN3VcWSAMG0zwQ/JuYCT.E921nXv6ttbQSzhXhDh1YEBNXIW","email": "nuwe@nuwe.com"}```     |
 | **Error Responses**  | **400 - Invalid email:** ```Invalid email: nuwe#nuwe.com```                                                |
@@ -60,7 +60,7 @@ Develop a simple user authentication functionality for the digital financial man
 |                      | **400 - Missing data:** ```All fields are required.```                                                     |
 |                      | **400 - Null fields:** ```No empty fields allowed.```                                                      |
 
-| **Endpoint**         | **/auth/login**                                                                                            |
+| **Endpoint**         | **/api/auth/login**                                                                                            |
 |----------------------|-------------------------------------------------------------------------------------------------------------|
 | **Response**         | **200 - Success**   ```{"token": (JWT token) }```                                                           |
 | **Error Responses**  | **400 - User not found:** ```User not found for the given email: (email)```                               |
