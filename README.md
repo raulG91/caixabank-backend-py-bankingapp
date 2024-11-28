@@ -6,7 +6,7 @@ Subcategory   ➡️   Python Backend
 
 Difficulty   ➡️   Medium
 
-Expected solution time ➡️ 3 hours. **It is essential to complete your solution within this timeframe,** as it is a critical performance indicator used by the hiring company to evaluate your work. The timer will begin when you click the start button and will stop upon your submission.
+Average solution time ➡️ 3 hours. The timer will begin when you click the start button and will stop upon your submission.
 
 ---
 
