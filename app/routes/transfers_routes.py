@@ -44,9 +44,9 @@ def simulate():
                             return jsonify({"msg": f'Amount in target currency: {target_amount}.'}),201
             return Response(json.dumps({"msg":"Invalid currencies or no exchange data available."}),status=404,mimetype='application/json')   
         else:
-            return Response(response=json.dumps({"msg":"No empty fields allowed"}),status=400,mimetype='application/json')
+            return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
     else:
-        return Response(response=json.dumps({"msg":"No empty fields allowed"}),status=400,mimetype='application/json')
+        return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
 
 @transfers_bp.route('/fees',methods=['GET'])
 @jwt_required()
