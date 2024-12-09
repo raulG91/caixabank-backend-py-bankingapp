@@ -108,3 +108,42 @@ class ExpenseRecurring(db.Model):
                 return self
             except Exception as e:
                 return False      
+            
+class Alerts(db.Model):
+    __tablename__= 'alerts'
+    id=db.Column(db.Integer,primary_key=True)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
+    target_amount=db.Column(db.Float)
+    alert_threshold = db.Column(db.Float)
+    balance_drop_threshold = db.Column(db.Float)
+    created_at = db.Column(db.DateTime()) 
+
+    def __init__(self,target_amout,alert_threshold,balance_drop,user_id):
+        self.target_amount = target_amout
+        self.alert_threshold = alert_threshold
+        self.user_id = user_id
+        self.balance_drop_threshold = balance_drop
+        self.created_at = datetime.now()
+    def getId(self)->int:
+        return self.id
+    def get_target_amount(self):
+        return self.target_amount
+    def get_alert_threshold(self):
+        return self.alert_threshold
+    def get_balance_threshold(self):
+        return self.balance_drop_threshold
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return self
+        except Exception as e:
+            return False   
+    def delete(self):
+        try:
+            db.session.delete(self)
+            db.session.commit()    
+            return self
+        except Exception as e:
+            return False           
+                    
