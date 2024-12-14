@@ -1,6 +1,6 @@
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime,timezone
 import json
 db = SQLAlchemy()
 class User(db.Model):
@@ -27,7 +27,9 @@ class User(db.Model):
     def getId(self):
         return self.id
     def getBalance(self):
-        self.balance
+        return self.balance
+    def setBalance(self,new_balance):
+        self.balance = new_balance    
     def setName(self,name):
         self.name = name
     def save(self):
@@ -145,5 +147,53 @@ class Alerts(db.Model):
             db.session.commit()    
             return self
         except Exception as e:
-            return False           
-                    
+            return False          
+
+class Transaction(db.Model):
+    __tablename__= "transactions"
+    id=db.Column(db.Integer,primary_key=True)
+    user_id = db.Column(db.Integer,db.ForeignKey("users.id"))
+    amount = db.Column(db.Float)
+    category = db.Column(db.String(255))
+    timestamp = db.Column(db.DateTime())
+    fraud = db.Column(db.Boolean)
+
+    def __init__(self,user_id,amount,category,timestamp=""):
+        self.user_id = user_id
+        self.amount= amount
+        self.category = category
+        if timestamp != "":
+            datetime_obj = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+            datetime_obj= datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
+            self.timestamp = datetime.strptime(datetime_obj,"%Y-%m-%d %H:%M:%S")
+        else:
+             self.timestamp = datetime.now(timezone.utc)    
+        self.fraud = False
+
+        return False  
+    def getId(self):
+        return self.id
+    def getAmount(self):
+        return self.amount
+    def getCategory(self):
+        return self.category
+    def getFraud(self):
+        return self.fraud  
+    def getUserId(self):
+        return self.user_id
+    def setFraud(self,value):
+        self.fraud = value
+    def getTimestamp(self):
+        return self.timestamp.strftime("%Y-%m-%dT%H:%M:%SZ") 
+    def getTimestampDBFormat(self):
+        return self.timestamp
+    def save(self):
+        try:
+            db.session.add(self)
+            db.session.commit()
+            return self
+        except Exception as e:
+            print(e)
+            return False   
+             
+        

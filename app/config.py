@@ -6,7 +6,5 @@ class Config(object):
 class DevConfig(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:@localhost/bankingapp'
     SQLALCHEMY_TRACK_MODIFICATIONS=True
-    #Configuration for 
-
 class ProdConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']

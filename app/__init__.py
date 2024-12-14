@@ -1,6 +1,6 @@
 from flask import Flask
 from .config import DevConfig,ProdConfig
-from .routes import user_bp,expenses_bp,transfers_bp,alerts_bp
+from .routes import user_bp,expenses_bp,transfers_bp,alerts_bp,transaction_bp
 from flask_sqlalchemy import SQLAlchemy
 from .models import db
 from flask_jwt_extended import JWTManager
@@ -11,6 +11,7 @@ def create_app():
     app.register_blueprint(expenses_bp)
     app.register_blueprint(transfers_bp)
     app.register_blueprint(alerts_bp)
+    app.register_blueprint(transaction_bp)
     #Initialize db
     with app.app_context():
         db.init_app(app)
