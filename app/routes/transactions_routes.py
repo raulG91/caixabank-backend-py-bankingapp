@@ -1,14 +1,17 @@
 from . import transaction_bp
-from flask import request,jsonify,Response
-from app.models import User,Transaction
+from flask import request,jsonify,Response,current_app
+from app.models import User,Transaction,Alerts
 from flask_jwt_extended import JWTManager,jwt_required,get_jwt_identity
 from app.utils.functions import check_mandatory_fields
 from datetime import datetime,timezone,timedelta
 import json
 import numpy as np
 from dateutil.relativedelta import relativedelta
-
-
+from flask_mail import Message,Mail
+import logging
+import smtplib
+import smtplib
+from email.mime.text import MIMEText
 @transaction_bp.route('/transactions',methods=['POST'])
 @jwt_required()
 def new_transaction():
@@ -29,6 +32,7 @@ def new_transaction():
                     #Now update user balance
                     user.setBalance(user.getBalance()-transaction.getAmount())
                     if user.save():
+                        alerts(transaction,user)
                         return Response(response=json.dumps({
                             "msg": "Transaction added and evaluated for fraud.",
                             "data":{
@@ -144,3 +148,44 @@ def check_fraud(transaction:Transaction):
             print(e)          
      
     return is_fraud
+def send_email_alert(email,subject,body):
+    logging.basicConfig(level=logging.DEBUG)
+    smtplib.SMTP.debuglevel = 1  # Enable debug messages for SMTP
+    '''with current_app.app_context():
+        mail:Mail = current_app.extensions['mail']
+        print(type(mail))
+        msg = Message("Balance alert",
+              sender="rgarciapedrosa@gmail.com" ,     
+              recipients=[email],
+              reply_to="bodamariaraul105@outlook.com")
+        msg.body = body
+        mail.send(msg)'''
+    try:
+        with smtplib.SMTP("smtp", 1025) as server:
+            server.ehlo()  # Send EHLO command
+            message = f"Subject: {subject}\n\n{body}"
+            # Send the email
+            server.sendmail(current_app.config.get('MAIL_DEFAULT_SENDER'), email, message)
+            print(f"Email sent successfully")
+    except Exception as e:
+        print(f"Error: {e}")
+    
+
+def alerts(transaction:Transaction,user:User):
+    
+    #Check if the balance has dropped under the limit
+
+    #Find if the user has any alert
+
+    alerts = Alerts.query.filter(
+        Alerts.user_id == user.getId()
+    ).order_by(Alerts.created_at)
+
+    for alert in alerts:
+        if (alert.get_balance_threshold() != None) and (alert.get_balance_threshold() > 0) and (user.getBalance() <= alert.get_balance_threshold()):
+            email_body = f'Dear {user.getName()}, \nWe noticed a significant balance drop in your account more than {alert.get_balance_threshold()}.\nIf this wasn\'t you, please review your recent transactions to ensure everything is correct.\nBest Regards,\nThe Management Team'
+            send_email_alert(user.getEmail(),"Balance drop alert",email_body)
+        elif(alert.get_alert_threshold() != None) and (alert.get_alert_threshold() > 0) and (user.getBalance()>= alert.get_alert_threshold()):
+            email_body =  f'Dear {user.getName()}, \nGreat news! Your savings are nearing the target amount of {alert.get_target_amount()}\nKeep up the great work and stay consistent!\nBest Regards,\nThe Management Team'    
+            print(email_body)
+            send_email_alert(user.getEmail(),"Saving alert",email_body)

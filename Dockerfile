@@ -6,6 +6,7 @@ WORKDIR /bakingapp
 
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
+RUN apt-get update && apt-get install -y iputils-ping netcat
 
 #Copy rest of the files into workdir
 COPY . .
