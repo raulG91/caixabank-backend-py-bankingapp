@@ -105,10 +105,9 @@ def check_fraud(transaction:Transaction):
     except Exception as e:
         print(e)
 
-    if len(previous_transactions) > 0:
-        categories = [x.getCategory() for x in previous_transactions]
+    categories = [x.getCategory() for x in previous_transactions]
 
-        is_fraud = not (transaction.getCategory() in categories)
+    is_fraud = not (transaction.getCategory() in categories)
     
     if is_fraud:
         return is_fraud
@@ -188,4 +187,4 @@ def alerts(transaction:Transaction,user:User):
         elif(alert.get_alert_threshold() != None) and (alert.get_alert_threshold() > 0) and (user.getBalance()>= alert.get_alert_threshold()):
             email_body =  f'Dear {user.getName()}, \nGreat news! Your savings are nearing the target amount of {alert.get_target_amount()}\nKeep up the great work and stay consistent!\nBest Regards,\nThe Management Team'    
             print(email_body)
-            send_email_alert(user.getEmail(),"Saving alert",email_body)
+            #send_email_alert(user.getEmail(),"Saving alert",email_body)
