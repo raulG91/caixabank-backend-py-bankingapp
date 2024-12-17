@@ -12,6 +12,8 @@ import logging
 import smtplib
 import smtplib
 from email.mime.text import MIMEText
+from email.message import EmailMessage
+
 @transaction_bp.route('/transactions',methods=['POST'])
 @jwt_required()
 def new_transaction():
@@ -150,21 +152,16 @@ def check_fraud(transaction:Transaction):
 def send_email_alert(email,subject,body):
     logging.basicConfig(level=logging.DEBUG)
     smtplib.SMTP.debuglevel = 1  # Enable debug messages for SMTP
-    '''with current_app.app_context():
-        mail:Mail = current_app.extensions['mail']
-        print(type(mail))
-        msg = Message("Balance alert",
-              sender="rgarciapedrosa@gmail.com" ,     
-              recipients=[email],
-              reply_to="bodamariaraul105@outlook.com")
-        msg.body = body
-        mail.send(msg)'''
     try:
         with smtplib.SMTP("smtp", 1025) as server:
             server.ehlo()  # Send EHLO command
-            message = f"Subject: {subject}\n\n{body}"
+            email_message = EmailMessage()
+            email_message["From"] = current_app.config.get('MAIL_DEFAULT_SENDER')
+            email_message["To"] = email
+            email_message["Subject"] = subject
+            email_message.set_content(body)
             # Send the email
-            server.sendmail(current_app.config.get('MAIL_DEFAULT_SENDER'), email, message)
+            server.sendmail(current_app.config.get('MAIL_DEFAULT_SENDER'), email, email_message.as_string())
             print(f"Email sent successfully")
     except Exception as e:
         print(f"Error: {e}")
@@ -175,10 +172,13 @@ def alerts(transaction:Transaction,user:User):
     #Check if the balance has dropped under the limit
 
     #Find if the user has any alert
+    try:
+        alerts = Alerts.query.filter(
+            Alerts.user_id == user.getId()
+        ).order_by(Alerts.created_at)
+    except Exception as e:
+        print(e)
 
-    alerts = Alerts.query.filter(
-        Alerts.user_id == user.getId()
-    ).order_by(Alerts.created_at)
 
     for alert in alerts:
         if (alert.get_balance_threshold() != None) and (alert.get_balance_threshold() > 0) and (user.getBalance() <= alert.get_balance_threshold()):
