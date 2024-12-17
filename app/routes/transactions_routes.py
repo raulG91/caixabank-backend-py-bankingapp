@@ -182,9 +182,9 @@ def alerts(transaction:Transaction,user:User):
 
     for alert in alerts:
         if (alert.get_balance_threshold() != None) and (alert.get_balance_threshold() > 0) and (user.getBalance() <= alert.get_balance_threshold()):
-            email_body = f'Dear {user.getName()},\n\nWe noticed a significant balance drop in your account more than {alert.get_balance_threshold()}.\nIf this wasn\'t you, please review your recent transactions to ensure everything is correct.\n\nBest Regards,\nThe Management Team'
+            email_body = f'Dear {user.getName()},\n\nWe noticed a significant balance drop in your account more than \n{alert.get_balance_threshold()}.\nIf this wasn\'t you, please review your recent transactions to ensure \neverything is correct.\n\nBest Regards,\nThe Management Team'
             send_email_alert(user.getEmail(),"Balance drop alert",email_body)
         elif(alert.get_alert_threshold() != None) and (alert.get_alert_threshold() > 0) and (user.getBalance()>= alert.get_alert_threshold()):
-            email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of {alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
+            email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of \n{alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
             print(email_body)
             #send_email_alert(user.getEmail(),"Saving alert",email_body)
