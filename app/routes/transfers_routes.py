@@ -7,7 +7,7 @@ import json
 import csv
 import os
 
-@transfers_bp.route('/simulate',methods=['GET'])
+@transfers_bp.route('/simulate',methods=['POST'])
 @jwt_required()
 def simulate():
     
