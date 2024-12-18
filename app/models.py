@@ -62,7 +62,6 @@ class ExpenseRecurring(db.Model):
             self.user_id = user_id
             self.amount = amount
             self.frequency = frequency
-            year,month,day = start_date.split("-")
             self.start_date = datetime.strptime(start_date, "%Y-%m-%d")
             self.created_at = datetime.today()
         def getId(self):
@@ -92,8 +91,8 @@ class ExpenseRecurring(db.Model):
                     "expense_name": self.expense_name,
                     "amount": self.amount,
                     "frequency": self.frequency,
-                    "start_date": f'{self.start_date.year}-{self.start_date.month}-{self.start_date.day}',
-                    "created_at":f'{self.created_at.year}-{self.created_at.month}-{self.created_at.day}'
+                    "start_date": self.start_date.strftime("%Y-%m-%d"),
+                    "created_at": self.created_at.strftime("%Y-%m-%d")
                 }
             
         def save(self):

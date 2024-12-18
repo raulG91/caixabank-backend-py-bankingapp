@@ -22,6 +22,7 @@ def new_expense():
             if (expense_info['expense_name']!= "" and expense_info['expense_name']!= None) and (expense_info['amount'] !="" and expense_info['amount']!= None) and (expense_info['frequency'] !="" and expense_info['frequency']!= None) and (expense_info['start_date'] !="" and expense_info['start_date']!= None):
                 new_expense = ExpenseRecurring(expense_name=expense_info['expense_name'],amount=expense_info['amount'],frequency=expense_info['frequency'],start_date=expense_info['start_date'],user_id=user.getId())
                 if new_expense.save():
+                    print(type(new_expense.getStartDate()))
                     return jsonify({
                         "msg":"Recurring expense added successfully",
                         "data":{
@@ -29,7 +30,7 @@ def new_expense():
                             "expense_name": new_expense.getName(),
                             "amount": new_expense.getAmount(),
                             "frequency": new_expense.getFrequency(),
-                            "start_date": new_expense.getStartDate()
+                            "start_date": new_expense.getStartDate().strftime("%Y-%m-%d")
                         }
                     }),201
                 else:
@@ -37,7 +38,7 @@ def new_expense():
             else:
                 return Response(response=json.dumps({"msg":"No empty fields allowed"}),status=400,mimetype="application/json")
         else:
-            return Response(response=json.dumps({"msg":"No empty fields allowed"}),status=400,mimetype='application/json')
+            return Response(response=json.dumps({"msg":"No data provided."}),status=400,mimetype='application/json')
 
     else:
         return Response(status=401)
@@ -86,11 +87,11 @@ def update_expense(expense_id):
                      return Response(response=json.dumps({"msg":"Internal error"}),status=500,mimetype='application/json')
             else:
                 #Expense doesn't exist
-                return Response(response=json.dumps({"msg":"Expense not found"}),status=404,mimetype='application/json')
+                return Response(response=json.dumps({"msg":"Expense not found."}),status=404,mimetype='application/json')
         else:
-            return Response(response=json.dumps({"msg":"No empty fields allowed"}),status=400,mimetype='application/json')
+            return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
     else:
-        return Response(response=json.dumps({"msg":"No data provided"}),status=400,mimetype='application/json')
+        return Response(response=json.dumps({"msg":"No data provided."}),status=400,mimetype='application/json')
 
 @expenses_bp.route('/<int:expense_id>',methods=['DELETE'])
 @jwt_required()
@@ -106,7 +107,7 @@ def delete_expense(expense_id):
             return Response(response=json.dumps({"msg":"Recurring expense deleted successfully."}),status=404,mimetype='application/json')
 
     else:
-        return Response(response=json.dumps({"msg":"Expense not found"}),status=404,mimetype='application/json')
+        return Response(response=json.dumps({"msg":"Expense not found."}),status=404,mimetype='application/json')
 
 
 @expenses_bp.route('/projection',methods=['GET'])

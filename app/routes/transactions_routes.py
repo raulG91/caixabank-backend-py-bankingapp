@@ -13,7 +13,7 @@ import smtplib
 import smtplib
 from email.mime.text import MIMEText
 from email.message import EmailMessage
-
+'''
 @transaction_bp.route('/transactions',methods=['POST'])
 @jwt_required()
 def new_transaction():
@@ -188,3 +188,4 @@ def alerts(transaction:Transaction,user:User):
             email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of \n{alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
             print(email_body)
             #send_email_alert(user.getEmail(),"Saving alert",email_body)
+'''            
