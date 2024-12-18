@@ -13,7 +13,7 @@ import smtplib
 import smtplib
 from email.mime.text import MIMEText
 from email.message import EmailMessage
-'''
+
 @transaction_bp.route('/transactions',methods=['POST'])
 @jwt_required()
 def new_transaction():
@@ -23,33 +23,36 @@ def new_transaction():
     if user :
         if check_mandatory_fields(['user_id','amount','category'],transaction_info):
             if (transaction_info['user_id'] != "" and transaction_info['user_id'] != None) and (transaction_info['amount'] != "" and transaction_info['amount'] != None) and (transaction_info['category'] != "" and transaction_info['category'] != None):
-                if 'timestamp' in transaction_info:
-                    transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'],transaction_info['timestamp'])
-                else:
-                    transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'])
+                if isinstance(transaction_info['user_id'],int) and isinstance(transaction_info['amount'],float) and isinstance(transaction_info['category'],str):
+                    if 'timestamp' in transaction_info:
+                        transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'],transaction_info['timestamp'])
+                    else:
+                        transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'])
 
-                transaction.setFraud(check_fraud(transaction))
-                if transaction.save():
-                    #Transaction was saved in the database
-                    #Now update user balance
-                    user.setBalance(user.getBalance()-transaction.getAmount())
-                    if user.save():
-                        alerts(transaction,user)
-                        return Response(response=json.dumps({
-                            "msg": "Transaction added and evaluated for fraud.",
-                            "data":{
-                                "id": transaction.getId(),
-                                "user_id": user.getId(),
-                                "amount": transaction.getAmount(),
-                                "category": transaction.getCategory(),
-                                "timestamp": transaction.getTimestamp(),
-                                "fraud": transaction.getFraud()
-                        }
-                         }),status=201,mimetype='application/json')
+                    transaction.setFraud(check_fraud(transaction))
+                    if transaction.save():
+                        #Transaction was saved in the database
+                        #Now update user balance
+                        user.setBalance(user.getBalance()-transaction.getAmount())
+                        if user.save():
+                            #alerts(transaction,user)
+                            return Response(response=json.dumps({
+                                "msg": "Transaction added and evaluated for fraud.",
+                                "data":{
+                                    "id": transaction.getId(),
+                                    "user_id": user.getId(),
+                                    "amount": transaction.getAmount(),
+                                    "category": transaction.getCategory(),
+                                    "timestamp": transaction.getTimestamp(),
+                                    "fraud": transaction.getFraud()
+                                }
+                            }),status=201,mimetype='application/json')
+                        else:
+                            return Response(response=json.dumps({"msg":"Internal error"}),status=500,mimetype='application/json')
                     else:
                         return Response(response=json.dumps({"msg":"Internal error"}),status=500,mimetype='application/json')
                 else:
-                    return Response(response=json.dumps({"msg":"Internal error"}),status=500,mimetype='application/json')
+                    return Response(response=json.dumps({"msg":"Invalid input types"}),status=400,mimetype='application/json')
             else:
                  return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
                
@@ -87,7 +90,7 @@ def check_fraud(transaction:Transaction):
     daily_amount = list(day_totals.values())
     if len(daily_amount) >= 2:
         #calculate averrage and standard for daily amouts
-        averrage= np.mean(daily_amount)
+        averrage= np.average(daily_amount)
         standard_desviation = np.std(daily_amount)
         threshold = averrage + 3 * standard_desviation
         is_fraud = transaction.getAmount() > threshold
@@ -98,7 +101,7 @@ def check_fraud(transaction:Transaction):
 
     start_date = reference_date - relativedelta(months=6)
     try:
-        #Get all transactions in the previous 90 days
+        #Get all transactions in the previous 6 months
         previous_transactions = Transaction.query.filter(
             Transaction.user_id == transaction.getUserId(),
             Transaction.timestamp <= reference_date,
@@ -117,10 +120,11 @@ def check_fraud(transaction:Transaction):
     #Third check: More than 3 transactions occurs in the las 5 minutes and the combined cost exceed daily sverrage spend
 
     #Check if there are 3 trasactions in the last 5 minutes
+    reference_date = datetime.now(timezone.utc) 
     start_date = reference_date - timedelta(minutes=5)
 
     try:
-        #Get all transactions in the previous 90 days
+        #Get all transactions in the previous 5 minutes
         previous_transactions = Transaction.query.filter(
             Transaction.user_id == transaction.getUserId(),
             Transaction.timestamp <= reference_date,
@@ -129,21 +133,22 @@ def check_fraud(transaction:Transaction):
     except Exception as e:
         print(e)
 
-    if(len(previous_transactions) >= 3):
+    if(len(previous_transactions) >= 2):
         #Compute amounts for those transactions
-        sum_amounts = 0
+        sum_amounts = transaction.getAmount()
         for trans in previous_transactions:
             sum_amounts += trans.getAmount()
+            
 
         # Now check daily averrage spend
         try:
-            user_transactions = Transaction.query.filter_by(user_id = transaction.getUserId()) 
+            user_transactions = Transaction.query.filter_by(user_id = transaction.getUserId()).all()
             day_totals = {}
             for trans in user_transactions:
                 day = trans.getTimestampDBFormat().date()
                 day_totals[day] = day_totals.get(day,0) + trans.getAmount()
             daily_amount = list(day_totals.values())
-            averrage_spend = np.mean(daily_amount)
+            averrage_spend = np.average(daily_amount)
             is_fraud = sum_amounts > averrage_spend
         except Exception as e:
             print(e)          
@@ -188,4 +193,4 @@ def alerts(transaction:Transaction,user:User):
             email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of \n{alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
             print(email_body)
             #send_email_alert(user.getEmail(),"Saving alert",email_body)
-'''            
+       
