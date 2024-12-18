@@ -69,6 +69,7 @@ def check_fraud(transaction:Transaction):
     is_fraud = False
 
     reference_date = transaction.getTimestampDBFormat()
+    '''
     start_date = reference_date - timedelta(days=90)
     try:
         #Get all transactions in the previous 90 days
@@ -97,9 +98,9 @@ def check_fraud(transaction:Transaction):
 
     if is_fraud:
         return is_fraud
-    return is_fraud
-    #Second check: Marks as fraud if it is category didn't use in the last six months
 '''
+    #Second check: Marks as fraud if it is category didn't use in the last six months
+
     start_date = reference_date - relativedelta(months=6)
     try:
         #Get all transactions in the previous 6 months
@@ -117,7 +118,7 @@ def check_fraud(transaction:Transaction):
     
     if is_fraud:
         return is_fraud
-
+'''
     #Third check: More than 3 transactions occurs in the las 5 minutes and the combined cost exceed daily sverrage spend
 
     #Check if there are 3 trasactions in the last 5 minutes
