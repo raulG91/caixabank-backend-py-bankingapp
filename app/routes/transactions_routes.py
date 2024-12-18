@@ -29,7 +29,7 @@ def new_transaction():
                     else:
                         transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'])
 
-                    transaction.setFraud(check_fraud(transaction))
+                   # transaction.setFraud(check_fraud(transaction))
                     if transaction.save():
                         #Transaction was saved in the database
                         #Now update user balance
@@ -69,7 +69,7 @@ def check_fraud(transaction:Transaction):
     is_fraud = False
 
     reference_date = transaction.getTimestampDBFormat()
-    '''
+  
     start_date = reference_date - timedelta(days=90)
     try:
         #Get all transactions in the previous 90 days
@@ -98,7 +98,7 @@ def check_fraud(transaction:Transaction):
 
     if is_fraud:
         return is_fraud
-'''
+
     #Second check: Marks as fraud if it is category didn't use in the last six months
 
     start_date = reference_date - relativedelta(months=6)
@@ -118,7 +118,7 @@ def check_fraud(transaction:Transaction):
     
     if is_fraud:
         return is_fraud
-'''
+
     #Third check: More than 3 transactions occurs in the las 5 minutes and the combined cost exceed daily sverrage spend
 
     #Check if there are 3 trasactions in the last 5 minutes
@@ -171,7 +171,7 @@ def send_email_alert(email,subject,body):
             print(f"Email sent successfully")
     except Exception as e:
         print(f"Error: {e}")
-    '''
+
 
 def alerts(transaction:Transaction,user:User):
     
