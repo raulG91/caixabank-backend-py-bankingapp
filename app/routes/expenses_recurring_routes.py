@@ -31,7 +31,7 @@ def new_expense():
                             "frequency": new_expense.getFrequency(),
                             "start_date": new_expense.getStartDate()
                         }
-                    })
+                    }),201
                 else:
                     return Response(response=json.dumps({"msg":"Internal error"}),status=500,mimetype='application/json')
             else:
