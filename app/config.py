@@ -18,9 +18,7 @@ class DevConfig(Config):
  
 
 class ProdConfig(Config):
+    
     SQLALCHEMY_DATABASE_URI = os.environ['SQLALCHEMY_DATABASE_URI']
     MAIL_SERVER = os.environ['MAIL_SERVER']
     MAIL_PORT = os.environ['MAIL_PORT']
-
-    #MAIL_SERVER = 'smtp'
-    #MAIL_PORT = 1025
