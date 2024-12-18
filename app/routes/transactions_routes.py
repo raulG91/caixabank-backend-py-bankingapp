@@ -92,13 +92,14 @@ def check_fraud(transaction:Transaction):
         #calculate averrage and standard for daily amouts
         averrage= np.average(daily_amount)
         standard_desviation = np.std(daily_amount)
-        threshold = averrage + 3 * standard_desviation
+        threshold = averrage + (3 * standard_desviation)
         is_fraud = transaction.getAmount() > threshold
 
     if is_fraud:
         return is_fraud
+    return is_fraud
     #Second check: Marks as fraud if it is category didn't use in the last six months
-
+'''
     start_date = reference_date - relativedelta(months=6)
     try:
         #Get all transactions in the previous 6 months
@@ -120,7 +121,6 @@ def check_fraud(transaction:Transaction):
     #Third check: More than 3 transactions occurs in the las 5 minutes and the combined cost exceed daily sverrage spend
 
     #Check if there are 3 trasactions in the last 5 minutes
-    reference_date = datetime.now(timezone.utc) 
     start_date = reference_date - timedelta(minutes=5)
 
     try:
@@ -133,9 +133,9 @@ def check_fraud(transaction:Transaction):
     except Exception as e:
         print(e)
 
-    if(len(previous_transactions) >= 2):
+    if(len(previous_transactions) >= 3):
         #Compute amounts for those transactions
-        sum_amounts = transaction.getAmount()
+        sum_amounts = 0
         for trans in previous_transactions:
             sum_amounts += trans.getAmount()
             
@@ -170,7 +170,7 @@ def send_email_alert(email,subject,body):
             print(f"Email sent successfully")
     except Exception as e:
         print(f"Error: {e}")
-    
+    '''
 
 def alerts(transaction:Transaction,user:User):
     

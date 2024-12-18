@@ -160,7 +160,7 @@ class Transaction(db.Model):
     def __init__(self,user_id,amount,category,timestamp=""):
         self.user_id = user_id
         self.amount= amount
-        self.category = category
+        self.category = category.lower()
         if timestamp != "":
             datetime_obj = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
             datetime_obj= datetime_obj.strftime("%Y-%m-%d %H:%M:%S")
