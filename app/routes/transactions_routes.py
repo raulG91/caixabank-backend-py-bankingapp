@@ -20,7 +20,7 @@ def new_transaction():
     user_email = get_jwt_identity()
     user:User = User.user_exist(user_email)
     transaction_info = request.get_json()
-    if user and user.getId() == transaction_info['user_id']:
+    if user :
         if check_mandatory_fields(['user_id','amount','category'],transaction_info):
             if (transaction_info['user_id'] != "" and transaction_info['user_id'] != None) and (transaction_info['amount'] != "" and transaction_info['amount'] != None) and (transaction_info['category'] != "" and transaction_info['category'] != None):
                 if 'timestamp' in transaction_info:
