@@ -32,7 +32,7 @@ def simulate():
                     for row in spamreader:
                         conversion_fees.append(row)
             except Exception as e:
-                return Response(response=e,status=500,mimetype='plain/text')
+                return Response(response=json.dumps({"msg":"Internal error"}),status=500,mimetype='application/json')
             
             for row in conversion_rates:
                 if row[0] == transfer_info['source_currency'] and row[1] == transfer_info['target_currency']:
@@ -41,7 +41,7 @@ def simulate():
                         if fee[0]==transfer_info['source_currency'] and fee[1] == transfer_info['target_currency']:
                             fee = fee[2]
                             target_amount = float(transfer_info['amount']) * (1-float(fee)) * float(rate)
-                            return jsonify({"msg": f'Amount in target currency: {target_amount}.'}),201
+                            return jsonify({"msg": f'Amount in target currency: {round(target_amount,2)}.'}),201
             return Response(json.dumps({"msg":"Invalid currencies or no exchange data available."}),status=404,mimetype='application/json')   
         else:
             return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
@@ -58,14 +58,15 @@ def get_fess():
             source_currency = request.args['source_currency']
             target_currency = request.args['target_currency']
             fees_path = os.path.abspath(os.path.join(os.path.dirname(__file__),os.pardir,'exchange_fees.csv'))
-            with open(fees_path,newline='') as csvfile:
-                spamreader = csv.reader(csvfile,delimiter=',')
-                for row in spamreader:
-                    if row[0] == source_currency and row[1] == target_currency:
-                        return jsonify({"fee":float(row[2])})
-                    
-                return Response(response=json.dumps({"msg":"No fee information available for these currencies."}),status=404,mimetype='application/json')    
-
+            try:
+                with open(fees_path,newline='') as csvfile:
+                    spamreader = csv.reader(csvfile,delimiter=',')
+                    for row in spamreader:
+                        if row[0] == source_currency and row[1] == target_currency:
+                            return jsonify({"fee":float(row[2])})
+                    return Response(response=json.dumps({"msg":"No fee information available for these currencies."}),status=404,mimetype='application/json')    
+            except Exception as e:
+                return jsonify({"msg":"Error opening fees file"}),500       
 
         else:
             return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
@@ -92,6 +93,6 @@ def get_rates():
                 #if change rate is not found
                 return Response(response=json.dumps({"msg":"No exchange rate available for these currencies."}),status=404,mimetype='application/json')
         except Exception as e:
-            return jsonify({"Error":"Error opening rates file"}),500       
+            return jsonify({"msg":"Error opening rates file"}),500       
     else:
         return Response(response=json.dumps({"msg":"No empty fields allowed."}),status=400,mimetype='application/json')
