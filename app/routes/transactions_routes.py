@@ -22,7 +22,7 @@ def new_transaction():
     if user :
         if check_mandatory_fields(['user_id','amount','category'],transaction_info):
             if (transaction_info['user_id'] != "" and transaction_info['user_id'] != None) and (transaction_info['amount'] != "" and transaction_info['amount'] != None) and (transaction_info['category'] != "" and transaction_info['category'] != None):
-                if isinstance(transaction_info['user_id'],int) and isinstance(transaction_info['amount'],float) and isinstance(transaction_info['category'],str):
+                if isinstance(transaction_info['user_id'],int) and (isinstance(transaction_info['amount'],float) or isinstance(transaction_info['amount'],int)) and isinstance(transaction_info['category'],str):
                     if 'timestamp' in transaction_info:
                         transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'],transaction_info['timestamp'])
                     else:
@@ -183,8 +183,10 @@ def alerts(transaction:Transaction,user:User):
         ).all()
     except Exception as e:
         print(e)
-
-    send_email_alert(user.getEmail(),"Balance drop alert",email_body)
+    
+    for alert in alerts:
+        email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of \n{alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
+        send_email_alert(user.getEmail(),"Balance drop alert",email_body)
 
     for alert in alerts:
         if (alert.get_balance_threshold() != None) and (alert.get_balance_threshold() > 0) and (user.getBalance() <= alert.get_balance_threshold()):
