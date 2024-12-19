@@ -181,7 +181,7 @@ def alerts(transaction:Transaction,user:User):
     try:
         alerts = Alerts.query.filter(
             Alerts.user_id == user.getId()
-        ).order_by(Alerts.created_at)
+        ).all()
     except Exception as e:
         print(e)
 
@@ -192,6 +192,5 @@ def alerts(transaction:Transaction,user:User):
             send_email_alert(user.getEmail(),"Balance drop alert",email_body)
         elif(alert.get_alert_threshold() != None) and (alert.get_alert_threshold() > 0) and (user.getBalance()>= alert.get_alert_threshold()):
             email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of \n{alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
-            print(email_body)
-            #send_email_alert(user.getEmail(),"Saving alert",email_body)
+            send_email_alert(user.getEmail(),"Saving alert",email_body)
        
