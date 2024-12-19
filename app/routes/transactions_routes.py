@@ -10,7 +10,6 @@ from dateutil.relativedelta import relativedelta
 from flask_mail import Message,Mail
 import logging
 import smtplib
-import smtplib
 from email.mime.text import MIMEText
 from email.message import EmailMessage
 
@@ -185,6 +184,7 @@ def alerts(transaction:Transaction,user:User):
     except Exception as e:
         print(e)
 
+    send_email_alert(user.getEmail(),"Balance drop alert",email_body)
 
     for alert in alerts:
         if (alert.get_balance_threshold() != None) and (alert.get_balance_threshold() > 0) and (user.getBalance() <= alert.get_balance_threshold()):
