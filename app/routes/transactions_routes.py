@@ -184,9 +184,6 @@ def alerts(transaction:Transaction,user:User):
     except Exception as e:
         print(e)
     
-    for alert in alerts:
-        email_body =  f'Dear {user.getName()},\n\nGreat news! Your savings are nearing the target amount of \n{alert.get_target_amount()}\nKeep up the great work and stay consistent!\n\nBest Regards,\nThe Management Team'    
-        send_email_alert(user.getEmail(),"Balance drop alert",email_body)
 
     for alert in alerts:
         if (alert.get_balance_threshold() != None) and (alert.get_balance_threshold() > 0) and (user.getBalance() <= alert.get_balance_threshold()):
