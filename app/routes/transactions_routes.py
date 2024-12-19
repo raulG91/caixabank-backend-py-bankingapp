@@ -29,13 +29,13 @@ def new_transaction():
                     else:
                         transaction = Transaction(user.getId(),transaction_info['amount'],transaction_info['category'])
 
-                   # transaction.setFraud(check_fraud(transaction))
+                    transaction.setFraud(check_fraud(transaction))
                     if transaction.save():
                         #Transaction was saved in the database
                         #Now update user balance
                         user.setBalance(user.getBalance()-transaction.getAmount())
                         if user.save():
-                            #alerts(transaction,user)
+                            alerts(transaction,user)
                             return Response(response=json.dumps({
                                 "msg": "Transaction added and evaluated for fraud.",
                                 "data":{
