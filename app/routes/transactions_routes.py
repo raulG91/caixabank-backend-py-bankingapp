@@ -159,7 +159,7 @@ def send_email_alert(email,subject,body):
     logging.basicConfig(level=logging.DEBUG)
     smtplib.SMTP.debuglevel = 1  # Enable debug messages for SMTP
     try:
-        with smtplib.SMTP("smtp", 1025) as server:
+        with smtplib.SMTP(current_app.config.get('MAIL_SERVER'), 1025) as server:
             server.ehlo()  # Send EHLO command
             email_message = EmailMessage()
             email_message["From"] = current_app.config.get('MAIL_DEFAULT_SENDER')
