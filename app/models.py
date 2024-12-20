@@ -167,7 +167,7 @@ class Transaction(db.Model):
             self.timestamp = datetime.strptime(datetime_obj,"%Y-%m-%d %H:%M:%S")
         else:
              self.timestamp = datetime.now(timezone.utc)    
-        self.fraud = True
+        self.fraud = False
 
         return False  
     def getId(self):

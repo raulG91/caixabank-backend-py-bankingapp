@@ -34,7 +34,7 @@ def new_transaction():
                         #Now update user balance
                         user.setBalance(user.getBalance()-transaction.getAmount())
                         if user.save():
-                            alerts(transaction,user)
+                            #alerts(transaction,user)
                             return Response(response=json.dumps({
                                 "msg": "Transaction added and evaluated for fraud.",
                                 "data":{
@@ -142,7 +142,8 @@ def check_fraud(transaction:Transaction):
 
         # Now check daily averrage spend
         try:
-            user_transactions = Transaction.query.filter_by(user_id = transaction.getUserId()).all()
+            user_transactions = Transaction.query.filter(Transaction.user_id == transaction.getUserId(),
+                                                         Transaction.timestamp <= reference_date).all()
             day_totals = {}
             for trans in user_transactions:
                 day = trans.getTimestampDBFormat().date()
