@@ -348,3 +348,8 @@ A1: Yes, as the app is dockerised, you are free to modify anything within the pr
 **Q2: Can I add resources that are not in requirements.txt?**
 
 A2: Yes, new resources can be added if necessary. Remember to add them to the `requirements.txt` file.
+
+## Installation
+
+In file  `config.py` you will need to set up your `SECRET_KEY` and `JWT_TOKEN` values. 
+Since the application is dockerised, only needs to execute `docker compose up -d` and it will generate necessary docker images. After generating docker images, you can use the API.
